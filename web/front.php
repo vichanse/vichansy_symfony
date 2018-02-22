@@ -12,7 +12,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Controller\ArgumentResolver;
 use Symfony\Component\HttpKernel\Controller\ControllerResolver;
 use Symfony\Component\Routing;
-
+use Symfony\Component\EventDispatcher\EventDispatcher;
 
 function render_template(Request $request)
 {
@@ -29,10 +29,14 @@ $routes = include __DIR__.'/../src/app.php';
 $context = new Routing\RequestContext();
 $matcher = new Routing\Matcher\UrlMatcher($routes, $context);
 
+$dispatcher = new EventDispatcher();
+$dispatcher->addSubscriber(new Vichansy\ContentLengthListener());
+$dispatcher->addSubscriber(new Vichansy\GoogleListener());
+
 $controllerResolver = new ControllerResolver();
 $argumentResolver = new ArgumentResolver();
 
-$framework = new Vichansy\Framework($matcher, $controllerResolver, $argumentResolver);
+$framework = new Vichansy\Framework($dispatcher, $matcher, $controllerResolver, $argumentResolver);
 $response = $framework->handle($request);
 
 $response->send();
