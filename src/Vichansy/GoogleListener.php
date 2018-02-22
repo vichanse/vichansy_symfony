@@ -8,8 +8,9 @@
 
 namespace Vichansy;
 
+use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
-class GoogleListener
+class GoogleListener implements EventSubscriberInterface
 {
     public function onResponse(ResponseEvent $event)
     {

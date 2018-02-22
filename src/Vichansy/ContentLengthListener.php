@@ -9,7 +9,9 @@
 namespace Vichansy;
 
 
-class ContentLengthListener
+use Symfony\Component\EventDispatcher\EventSubscriberInterface;
+
+class ContentLengthListener implements EventSubscriberInterface
 {
     public function onResponse(ResponseEvent $event)
     {

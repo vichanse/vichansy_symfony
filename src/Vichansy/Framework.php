@@ -9,32 +9,38 @@
 namespace Vichansy;
 
 use Symfony\Component\EventDispatcher\EventDispatcher;
+use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Controller\ArgumentResolverInterface;
 use Symfony\Component\HttpKernel\Controller\ControllerResolverInterface;
 use Symfony\Component\Routing\Exception\ResourceNotFoundException;
 use Symfony\Component\Routing\Matcher\UrlMatcherInterface;
-use Symfony\Component\HttpKernel\HttpKernelInterface;
 
 
-class Framework implements HttpKernelInterface
+use Symfony\Component\HttpKernel\HttpKernel;
+
+class Framework extends HttpKernel
 {
-    protected $matcher;
-    protected $controllerResolver;
-    protected $argumentResolver;
+    protected $dispatcher;
+    protected $resolver;
+    protected $requestStack;
+    private $argumentResolver;
 
     public function __construct(
-        EventDispatcher $dispatcher,
-        UrlMatcherInterface $matcher,
-        ControllerResolverInterface $controllerResolver,
-        ArgumentResolverInterface $argumentResolver
-    )
+        EventDispatcherInterface $dispatcher,
+        ControllerResolverInterface $resolver,
+        RequestStack $requestStack,
+        ArgumentResolverInterface $argumentResolver)
     {
         $this->dispatcher = $dispatcher;
-        $this->matcher = $matcher;
-        $this->controllerResolver = $controllerResolver;
+        $this->resolver = $resolver;
+        $this->requestStack = $requestStack;
         $this->argumentResolver = $argumentResolver;
+        parent::__construct($dispatcher, $resolver, $requestStack, $argumentResolver);
+
+
     }
 
     public function handle(
